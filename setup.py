@@ -20,15 +20,15 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name='lsdo_project_template',
-    version=get_version('lsdo_project_template/__init__.py'),
+    name='panel_code_ode',
+    version=get_version('panel_code_ode/__init__.py'),
     author='Author name',
     author_email='author@gmail.com',
     license='LGPLv3+',
-    keywords='python project template repository package',
-    url='http://github.com/LSDOlab/lsdo_project_template',
-    download_url='http://pypi.python.org/pypi/lsdo_project_template',
-    description='A template repository/package for LSDOlab projects',
+    keywords='Ozone panel code',
+    url='http://github.com/LSDOlab/panel_code_ode',
+    download_url='http://pypi.python.org/pypi/panel_code_ode',
+    description='Initial interfacing between panel code and Ozone ode solver',
     long_description=long_description,
     long_description_content_type='text/markdown',
     packages=find_packages(),
