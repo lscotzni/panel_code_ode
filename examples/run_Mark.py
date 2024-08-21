@@ -10,7 +10,7 @@ b = 10. # wingspan
 c = 1. # wing chord
 ns = 11 # spanwise nodes
 nc = 11 # one-way chord-wise nodes (TE to LE)
-nt = 10 # number of time steps
+nt = 40 # number of time steps
 dt = 0.05 # time step size 
 num_nodes = 1
 
@@ -25,7 +25,7 @@ V_inf = np.array([-sos*mach, 0., 0.])
 V_inf = np.array([-10., 0., 0.])
 
 # generating mesh of size (2*nc-1, ns, 3)
-mesh_orig = gen_panel_mesh(nc, ns, c, b, span_spacing='default',  frame='default', plot_mesh=False)
+mesh_orig = gen_panel_mesh(nc, ns, c, b, span_spacing='cosine',  frame='default', plot_mesh=False)
 
 # expanding mesh to include (nt, num_nodes)
 mesh = np.zeros((nt, num_nodes) + mesh_orig.shape)
@@ -60,8 +60,9 @@ mu_w_0 = csdl.Variable(value=np.zeros((num_nodes, (nt-1)*(ns-1))))
 
 # instantiating solver class
 panel_solver = PanelSolver(
-    unsteady=True, # no need to touch
-    free_wake=False # toggle free-wake
+    unsteady=True,
+    free_wake=False, # FREE WAKE FLAG
+    vc=1.e-1 # vortex core size if free_wake=True
 )
 
 # adding mesh to solver
@@ -111,6 +112,7 @@ else:
     mesh = mesh.value
     CL = outputs['CL'].value
 
+# output plots; can toggle on or off
 # plot pressure distribution
 if False:
     plot_pressure_distribution(mesh, Cp, interactive=True, top_view=False)

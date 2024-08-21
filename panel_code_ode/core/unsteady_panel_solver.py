@@ -4,7 +4,7 @@ import csdl_alpha as csdl
 from panel_code_ode.core.source_doublet.source_doublet_solver import source_doublet_solver
 
 # def unsteady_panel_solver(mesh_list, mesh_velocity_list, dt, mesh_mode='structured', mode='source-doublet', connectivity=None, free_wake=False):
-def unsteady_panel_solver(*args, ode_states, nt, dt, mesh_mode='structured', mode='source-doublet', free_wake=False):
+def unsteady_panel_solver(*args, ode_states, nt, dt, mesh_mode='structured', mode='source-doublet', free_wake=False, vc=1.e-6):
     '''
     2 modes:
     - source doublet (Dirichlet (no-perturbation potential in the body))
@@ -63,7 +63,7 @@ def unsteady_panel_solver(*args, ode_states, nt, dt, mesh_mode='structured', mod
 
 
     if mode == 'source-doublet':
-        outputs, d_dt = source_doublet_solver(exp_orig_mesh_dict, ode_states, num_nodes, nt, dt, mesh_mode, free_wake)
+        outputs, d_dt = source_doublet_solver(exp_orig_mesh_dict, ode_states, num_nodes, nt, dt, mesh_mode, free_wake, vc=vc)
         # output_dict = outputs[0]
         # mesh_dict = outputs[1]
         # wake_mesh_dict = outputs[2]

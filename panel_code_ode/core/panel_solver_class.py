@@ -8,7 +8,7 @@ from panel_code_ode.core.unsteady_panel_solver import unsteady_panel_solver
 from panel_code_ode.core.source_doublet.post_processor import post_processor
 
 class PanelSolver(object):
-    def __init__(self, mode='source-doublet', BC='Dirichlet', unsteady=False, unstructured=False, dt=None, free_wake=False) -> None:
+    def __init__(self, mode='source-doublet', BC='Dirichlet', unsteady=False, unstructured=False, dt=None, free_wake=False, vc=1.e-6) -> None:
         self.mode = mode
         self.BC = BC        
         self.unsteady = unsteady
@@ -19,6 +19,7 @@ class PanelSolver(object):
 
         self.dt = dt
         self.free_wake = free_wake
+        self.vc = vc
 
         self.surface_names = []
         self.points = []
@@ -102,6 +103,7 @@ class PanelSolver(object):
             mesh_mode=self.mesh_mode,
             mode=self.mode,
             free_wake=self.free_wake,
+            vc=self.vc
         )
         
         dxw_dt, dmuw_dt = d_dt[0], d_dt[1]

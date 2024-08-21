@@ -3,7 +3,7 @@ import csdl_alpha as csdl
 
 from panel_code_ode.core.source_doublet.free_wake_comp import free_wake_comp
 
-def wake_propagation(mu, sigma, mu_wake, mesh_dict, wake_mesh_dict, num_nodes, free_wake=False):
+def wake_propagation(mu, sigma, mu_wake, mesh_dict, wake_mesh_dict, num_nodes, free_wake=False, vc=1.e-6):
     surface_names = list(mesh_dict.keys())
     num_surfaces = len(surface_names)
 
@@ -18,7 +18,7 @@ def wake_propagation(mu, sigma, mu_wake, mesh_dict, wake_mesh_dict, num_nodes, f
         num_surf_panels += mesh_dict[surface]['num_panels']
     
     if free_wake:
-        induced_vel = free_wake_comp(num_nodes, mesh_dict, mu, sigma, wake_mesh_dict, mu_wake)
+        induced_vel = free_wake_comp(num_nodes, mesh_dict, mu, sigma, wake_mesh_dict, mu_wake, vc=vc)
         # induced_vel is of shape (nn, num_wake_points, 3) -> VECTORIZED
         # we need to access it in grid-format
 
@@ -43,6 +43,8 @@ def wake_propagation(mu, sigma, mu_wake, mesh_dict, wake_mesh_dict, num_nodes, f
         wake_velocity = csdl.expand(TE_velocity, (num_nodes, nc_w, ns_w, 3), 'ijk->iajk')
 
         if free_wake:
+            print(wake_velocity.value)
+            print(induced_vel[:,start_i_w:stop_i_w,:].reshape((num_nodes, nc_w, ns_w, 3)).value)
             total_vel = wake_velocity.reshape((num_nodes, num_wake_pts, 3)) + induced_vel[:,start_i_w:stop_i_w,:]
         else:
             total_vel = wake_velocity.reshape((num_nodes, num_wake_pts, 3))

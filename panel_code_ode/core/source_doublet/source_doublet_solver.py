@@ -8,7 +8,7 @@ from panel_code_ode.core.source_doublet.compute_static_pressure import compute_s
 from panel_code_ode.core.source_doublet.wake_propagation import wake_propagation
 
 
-def source_doublet_solver(exp_orig_mesh_dict, ode_states, num_nodes, nt, dt, mesh_mode, free_wake):
+def source_doublet_solver(exp_orig_mesh_dict, ode_states, num_nodes, nt, dt, mesh_mode, free_wake, vc=1.e-6):
     '''
     steps:
         - take initial condition and input from Ozone for derivatives
@@ -66,7 +66,7 @@ def source_doublet_solver(exp_orig_mesh_dict, ode_states, num_nodes, nt, dt, mes
 
     pp_outputs = compute_static_pressure(mesh_dict, mu, sigma, num_nodes)
 
-    vel_wake = wake_propagation(mu, sigma, mu_wake, mesh_dict, wake_mesh_dict, num_nodes, free_wake=free_wake)
+    vel_wake = wake_propagation(mu, sigma, mu_wake, mesh_dict, wake_mesh_dict, num_nodes, free_wake=free_wake, vc=vc)
 
     # compute derivatives here 
     dmuw_dt = csdl.Variable((1, num_nodes, num_tot_wake_panels), value=0.)
@@ -112,7 +112,7 @@ def source_doublet_solver(exp_orig_mesh_dict, ode_states, num_nodes, nt, dt, mes
 
         dxw_dt_surf = csdl.Variable(shape=(num_nodes, nc_w, ns, 3), value=0.)
         # dxw_dt_surf = dxw_dt_surf.set(csdl.slice[:,0,:,:], value=(TE - wake_mesh[:,0,:,:] + wake_total_vel[:,0,:,:]*dt)/dt)
-        dxw_dt_surf = dxw_dt_surf.set(csdl.slice[:,1,:,:], value=(TE - wake_mesh[:,0,:,:] + wake_total_vel[:,1,:,:]*dt)/dt)
+        # dxw_dt_surf = dxw_dt_surf.set(csdl.slice[:,1,:,:], value=(TE - wake_mesh[:,0,:,:] + wake_total_vel[:,0,:,:]*dt)/dt)
         dxw_dt_surf = dxw_dt_surf.set(csdl.slice[:,1:,:,:], value=(wake_mesh[:,:-1,:,:] - wake_mesh[:,1:,:,:] + wake_total_vel[:,1:,:,:]*dt)/dt)
 
         dxw_dt = dxw_dt.set(csdl.slice[0,:,x_start:x_stop,:], value=dxw_dt_surf.reshape((num_nodes, num_wake_pts, 3)))

@@ -10,7 +10,7 @@ from panel_code_ode.utils.plot import plot_wireframe, plot_pressure_distribution
 b = 10.
 # c = 1.564
 c = .8698
-ns = 11
+ns = 21
 nc = 11
 
 alpha_deg = 10.
@@ -21,11 +21,11 @@ sos = 340.3
 V_inf = np.array([-sos*mach, 0., 0.])
 # V_inf = np.array([-10., 0., 0.])
 V_inf = np.array([-10., 0., 0.])
-nt = 10
+nt = 25
 dt=0.05
 num_nodes = 1
 
-mesh_orig = gen_panel_mesh(nc, ns, c, b, span_spacing='default',  frame='default', plot_mesh=False)
+mesh_orig = gen_panel_mesh(nc, ns, c, b, span_spacing='cosine',  frame='default', plot_mesh=False)
 
 mesh = np.zeros((nt, num_nodes) + mesh_orig.shape)
 for i in range(nt):
@@ -56,7 +56,8 @@ mu_w_0 = csdl.Variable(value=np.zeros((num_nodes, (nt-1)*(ns-1))))
 
 panel_solver = PanelSolver(
     unsteady=True,
-    free_wake=False
+    free_wake=True,
+    vc=1.e-1
 )
 
 panel_solver.add_structured_surface(
@@ -125,7 +126,7 @@ plt.show()
 if False:
     plot_pressure_distribution(mesh, Cp, interactive=True, top_view=False)
 
-if False:
+if True:
     # plot_wireframe(mesh, wake_mesh, mu.value, mu_wake.value, nt, interactive=False, backend='cv', name=f'wing_fw_{alpha_deg}')
     plot_wireframe(mesh, wake_mesh, mu, mu_wake, nt, interactive=False, backend='cv', name='free_wake_demo')
 
